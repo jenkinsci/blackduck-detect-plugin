@@ -34,10 +34,10 @@ import java.util.function.Function;
 
 public class DetectScriptStrategy extends DetectExecutionStrategy {
     public static final String DETECT_INSTALL_DIRECTORY = "Detect_Installation";
-    public static final String SUPPORTED_SHELL_SCRIPT_URL = "https://detect.blackduck.com/detect10-3.2.0-SNAPSHOT.sh";
-    public static final String SHELL_SCRIPT_FILENAME = "detect10-3.2.0-SNAPSHOT.sh";
-    public static final String SUPPORTED_POWERSHELL_SCRIPT_URL = "https://detect.blackduck.com/detect10-3.2.0-SNAPSHOT.ps1";
-    public static final String POWERSHELL_SCRIPT_FILENAME = "detect10-3.2.0-SNAPSHOT.ps1";
+    public static final String SUPPORTED_SHELL_SCRIPT_URL = "https://detect.blackduck.com/detect10.sh";
+    public static final String SHELL_SCRIPT_FILENAME = "detect10.sh";
+    public static final String SUPPORTED_POWERSHELL_SCRIPT_URL = "https://detect.blackduck.com/detect10.ps1";
+    public static final String POWERSHELL_SCRIPT_FILENAME = "detect10.ps1";
 
     private final JenkinsIntLogger logger;
     private final OperatingSystemType operatingSystemType;
