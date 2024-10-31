@@ -70,8 +70,8 @@ jenkinsPlugin {
     jenkinsVersion = '2.426.3' // as of version 0.40.0 of jpi, it's jenkinsVersion...
     displayName = 'Black Duck Detect'
     compatibleSinceVersion = '10.0.0'
-    url = 'https://github.com/jenkinsci/synopsys-detect-plugin'
-    gitHubUrl = 'https://github.com/jenkinsci/synopsys-detect-plugin'
+    url = 'https://github.com/jenkinsci/blackduck-detect-plugin'
+    gitHubUrl = 'https://github.com/jenkinsci/blackduck-detect-plugin'
 
     pluginFirstClassLoader = false
 }
