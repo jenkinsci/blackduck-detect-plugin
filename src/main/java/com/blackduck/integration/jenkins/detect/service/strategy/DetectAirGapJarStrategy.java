@@ -132,22 +132,11 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
                                 foundAirGapJars.length
                         ));
             } else {
-                if(foundAirGapJars.length == 1) {
+                if (foundAirGapJars.length == 1) {
                     return foundAirGapJars[0].toString();
                 } else {
                     return foundFallbackJars[0].toString();
                 }
-            }
-        }
-
-        private boolean checkFallbackJars(File[] foundFallbackJars) {
-
-            if(foundFallbackJars == null || foundFallbackJars.length == 0) {
-                return false;
-            } else if (foundFallbackJars.length > 1) {
-                return false;
-            } else {
-                return true;
             }
         }
     }
