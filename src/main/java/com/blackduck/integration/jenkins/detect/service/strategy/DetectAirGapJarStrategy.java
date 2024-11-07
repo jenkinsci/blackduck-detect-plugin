@@ -116,43 +116,38 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
             FileFilter fileFilter = file -> file.getName().startsWith(DETECT_JAR_PREFIX) && file.getName().endsWith(DETECT_JAR_SUFFIX);
             File[] foundAirGapJars = new File(airGapBaseDir).listFiles(fileFilter);
 
-            if (foundAirGapJars == null || foundAirGapJars.length == 0) {
-                String fallBackJarString = checkFallbackJars(airGapBaseDir);
-                if(StringUtils.isEmpty(fallBackJarString)) {
-                    throw new DetectJenkinsException(String.format(
-                            "Expected 1 jar from Detect Air Gap tool installation at <%s> and did not find any. Check your Jenkins plugin and tool configuration.",
-                            airGapBaseDir
-                    ));
-                } else {
-                    return fallBackJarString;
-                }
-            } else if (foundAirGapJars.length > 1) {
-                String fallBackJarString = checkFallbackJars(airGapBaseDir);
-                if(StringUtils.isEmpty(fallBackJarString)) {
-                    throw new DetectJenkinsException(
-                            String.format(
-                                    "Expected 1 jar from Detect Air Gap tool installation at <%s> and instead found %d jars. Check your Jenkins plugin and tool configuration.",
-                                    airGapBaseDir,
-                                    foundAirGapJars.length
-                            ));
-                } else {
-                    return fallBackJarString;
-                }
-            } else {
-                return foundAirGapJars[0].toString();
-            }
-        }
-
-        private String checkFallbackJars(String airGapBaseDir) {
             FileFilter backUpFileFilter = file -> file.getName().startsWith(FALLBACK_DETECT_JAR_PREFIX) && file.getName().endsWith(DETECT_JAR_SUFFIX);
             File[] foundFallbackJars = new File(airGapBaseDir).listFiles(backUpFileFilter);
 
-            if(foundFallbackJars == null || foundFallbackJars.length == 0) {
-                return StringUtils.EMPTY;
-            } else if (foundFallbackJars.length > 1) {
-                return StringUtils.EMPTY;
+            if ((foundAirGapJars == null || foundAirGapJars.length == 0) && (foundFallbackJars == null || foundFallbackJars.length == 0)) {
+                throw new DetectJenkinsException(String.format(
+                        "Expected 1 jar from Detect Air Gap tool installation at <%s> and did not find any. Check your Jenkins plugin and tool configuration.",
+                        airGapBaseDir
+                ));
+            } else if (foundAirGapJars.length > 1 || foundFallbackJars.length > 1) {
+                throw new DetectJenkinsException(
+                        String.format(
+                                "Expected 1 jar from Detect Air Gap tool installation at <%s> and instead found %d jars. Check your Jenkins plugin and tool configuration.",
+                                airGapBaseDir,
+                                foundAirGapJars.length
+                        ));
             } else {
-                return foundFallbackJars[0].toString();
+                if(foundAirGapJars.length == 1) {
+                    return foundAirGapJars[0].toString();
+                } else {
+                    return foundFallbackJars[0].toString();
+                }
+            }
+        }
+
+        private boolean checkFallbackJars(File[] foundFallbackJars) {
+
+            if(foundFallbackJars == null || foundFallbackJars.length == 0) {
+                return false;
+            } else if (foundFallbackJars.length > 1) {
+                return false;
+            } else {
+                return true;
             }
         }
     }
