@@ -57,9 +57,9 @@ public class DetectEnvironmentService {
 
         Optional<String> pluginVersion = jenkinsVersionHelper.getPluginVersion("blackduck-detect");
         if (pluginVersion.isPresent()) {
-            logger.info("Running Black Duck Detect Plugin for Jenkins version: " + pluginVersion.get());
+            logger.info("Running Black Duck Detect Jenkins Plugin version: " + pluginVersion.get());
         } else {
-            logger.info("Running Black Duck Detect Plugin for Jenkins");
+            logger.info("Running Black Duck Detect Jenkins Plugin");
         }
 
         return intEnvironmentVariables;
