@@ -65,7 +65,7 @@ public class DetectEnvironmentServiceTest {
     @Test
     public void testNoPluginVersionInLog() {
         detectEnvironmentService.createDetectEnvironment();
-        assertTrue(byteArrayOutputStream.toString().contains("Running Black Duck Detect Plugin for Jenkins"), "Log should contain default message");
+        assertTrue(byteArrayOutputStream.toString().contains("Running Black Duck Detect Jenkins Plugin"), "Log should contain default message");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class DetectEnvironmentServiceTest {
 
         detectEnvironmentService.createDetectEnvironment();
         assertTrue(
-            byteArrayOutputStream.toString().contains(String.format("Running Black Duck Detect Plugin for Jenkins version: %s", expectedJenkinsPluginVersion)),
+            byteArrayOutputStream.toString().contains(String.format("Running Black Duck Detect Jenkins Plugin version: %s", expectedJenkinsPluginVersion)),
             "Log should contain message with plugin version"
         );
     }
