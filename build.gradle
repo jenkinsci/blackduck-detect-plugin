@@ -80,10 +80,6 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:5.8.15'
     annotationProcessor 'com.blackduck.integration:jenkins-annotation-processor:1.0.0'
 
-    implementation('org.jenkins-ci.main:jenkins-core:2.426.3') {
-        exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
-    }
-
     implementation 'org.checkerframework:checker-qual:3.33.0'
     implementation 'com.google.j2objc:j2objc-annotations:2.8'
 
