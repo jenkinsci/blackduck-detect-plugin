@@ -124,7 +124,7 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
                         "Expected 1 jar from Detect Air Gap tool installation at <%s> and did not find any. Check your Jenkins plugin and tool configuration.",
                         airGapBaseDir
                 ));
-            } else if (foundAirGapJars.length > 1 || foundFallbackJars.length > 1) {
+            } else if ((foundAirGapJars != null && foundAirGapJars.length > 1) || (foundFallbackJars != null && foundFallbackJars.length > 1)) {
                 throw new DetectJenkinsException(
                         String.format(
                                 "Expected 1 jar from Detect Air Gap tool installation at <%s> and instead found %d jars. Check your Jenkins plugin and tool configuration.",
@@ -132,7 +132,7 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
                                 foundAirGapJars.length
                         ));
             } else {
-                if (foundAirGapJars.length == 1) {
+                if (foundAirGapJars != null && foundAirGapJars.length == 1) {
                     return foundAirGapJars[0].toString();
                 } else {
                     return foundFallbackJars[0].toString();

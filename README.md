@@ -6,7 +6,6 @@ Pipeline Groovy Scripts will have to be updated to reflect the changes [describe
 https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/jenkinspipelinejob.html).
 
 # Build
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.blackducksoftware.integration%3Ablackduck-detect&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.blackducksoftware.integration%3Ablackduck-detect)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
 
 # Where can I get the latest release?
