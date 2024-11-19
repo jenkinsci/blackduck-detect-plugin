@@ -1,6 +1,6 @@
 buildscript {
     apply from: "https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle", to: buildscript
-    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-cgp-version.gradle'
+    project.ext { managedCgpVersion = '2.1.1' }
 
     repositories {
         maven { url "https://repo.jenkins-ci.org/releases/" }
@@ -55,7 +55,7 @@ java {
 project.ext.excludesFromTestCoverage = ['**/DetectDownloadStrategy.java', '**/DetectPipelineStep.java', '**/DetectPostBuildStep.java', '**/DetectAirGapInstallation.java']
 
 group = 'com.blackducksoftware.integration'
-version = '10.0.0-SNAPSHOT'
+version = '10.0.0'
 description = 'Black Duck Detect for Jenkins'
 
 apply plugin: 'com.blackduck.integration.solution'
