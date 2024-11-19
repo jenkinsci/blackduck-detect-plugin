@@ -248,7 +248,7 @@ public class DetectAirGapJarStrategyTest {
 
         DetectJenkinsException exception = assertThrows(DetectJenkinsException.class, () -> configureCallable(REMOTE_JDK_HOME, tempJarDirectoryPathName).getSetupCallable().call());
         assertTrue(
-            exception.getMessage().contains(String.format(EXPECTED_ONE_JAR_ERROR_MSG + " and instead found %d jars", tempJarDirectoryPathName, 2)),
+            exception.getMessage().contains(String.format(EXPECTED_ONE_JAR_ERROR_MSG + " and instead found multiple jars", tempJarDirectoryPathName, 2)),
             "Stacktrace does not contain expected message."
         );
     }
