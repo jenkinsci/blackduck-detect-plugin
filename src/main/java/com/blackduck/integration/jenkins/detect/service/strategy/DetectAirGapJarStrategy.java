@@ -134,7 +134,7 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
             } else {
                 if (foundAirGapJars != null && foundAirGapJars.length == 1) {
                     return foundAirGapJars[0].toString();
-                } else {
+                } else if(foundFallbackJars != null){
                     return foundFallbackJars[0].toString();
                 }
             }
