@@ -15,7 +15,6 @@ import com.blackduck.integration.jenkins.extensions.JenkinsIntLogger;
 import com.blackduck.integration.jenkins.service.JenkinsConfigService;
 import com.blackduck.integration.util.IntEnvironmentVariables;
 import jenkins.security.MasterToSlaveCallable;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -133,7 +132,7 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
             } else {
                 if (foundAirGapJars != null && foundAirGapJars.length == 1) {
                     return foundAirGapJars[0].toString();
-                } else if( foundFallbackJars != null && foundFallbackJars.length == 1 ) {
+                } else if(foundFallbackJars != null && foundFallbackJars.length == 1) {
                     return foundFallbackJars[0].toString();
                 } else {
                     throw new DetectJenkinsException(String.format(
