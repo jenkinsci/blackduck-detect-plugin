@@ -1,7 +1,7 @@
 # Overview
 Black Duck Detect for Jenkins simplifies running Detect in your Jenkins builds.
 
-The Synopsys Software Integrity Group is now Black Duck.
+The Synopsys Software Integrity Group is now Black Duck Software, Inc.
 
 As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decommissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.
 Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
