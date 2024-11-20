@@ -121,7 +121,11 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
             try {
                 return findAirGapJar(airGapBaseDir, foundAirGapJars);
             } catch (Exception e) {
-                return findAirGapJar(airGapBaseDir, foundFallbackJars);
+                if(foundAirGapJars == null || foundAirGapJars.length == 0) {
+                    return findAirGapJar(airGapBaseDir, foundFallbackJars);
+                } else {
+                    throw e;
+                }
             }
         }
 
