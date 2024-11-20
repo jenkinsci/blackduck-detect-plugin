@@ -8,7 +8,7 @@ Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/ar
 
 For existing users, the Black Duck Detect Jenkins plugin should be considered a fresh installation as the domain has changed.
 
-**Actions to Take before Upgrading**:
+**Actions to Take before Upgrading to 10.0.0**:
 
 * Before moving from the Synopsys Detect Jenkins plugin to the Black Duck® Detect Jenkins plugin, you should record your existing system configuration.
 * Review the additional information before upgrading from the Synopsys Detect Jenkins plugin to the Black Duck® Detect Jenkins plugin under [Downloading and Installing](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/downloadingandinstalling.html#updating-existing-jenkins).  There are changes that need to be made to ensure continued successful execution within pipelines.
