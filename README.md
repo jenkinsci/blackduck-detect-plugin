@@ -20,4 +20,4 @@ If you are a new user, you may proceed with installing the Black Duck Detect Jen
 You can download the latest artifact from releases: https://updates.jenkins-ci.org/download/plugins/blackduck-detect/
 
 # Documentation
-Documentation for Black Duck Detect for Jenkins can be found [here](https://documentation.blackduck.com/bundle/integrations-detect/page/integrations/jenkinsplugin/jenkins.html)
+Documentation for Black Duck Detect for Jenkins can be found [here](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/jenkins.html)
