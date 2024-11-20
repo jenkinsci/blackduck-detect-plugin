@@ -6,9 +6,14 @@ The Synopsys Software Integrity Group is now Black Duck Software, Inc.
 As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decommissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.
 Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
 
-For existing users, the Black Duck Detect Jenkins plugin should be considered a fresh installation as the domain has changed. Before moving from the Synopsys Detect Jenkins plugin to the Black Duck Detect Jenkins plugin, you should record your existing system configuration. See additional information about upgrading from the Synopsys Detect Jenkins plugin to the Black Duck Detect Jenkins plugin under [Downloading and Installing](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/downloadingandinstalling.html#updating-existing-jenkins).
+For existing users, the Black Duck Detect Jenkins plugin should be considered a fresh installation as the domain has changed.
 
-For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to Black Duck Detect Jenkins plugin version 10.0.0 prior to February 14th, 2025.
+**Actions to Take before Upgrading**:
+
+* Before moving from the Detect Jenkins plugin to the Black Duck® Detect Jenkins plugin, you should record your existing system configuration.
+* Review the additional information before upgrading from the Detect Jenkins plugin to the Black Duck® Detect Jenkins plugin under Downloading and Installing.  There are changes that need to be made to ensure continued successful execution within pipelines.
+
+**For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to Black Duck Detect Jenkins plugin version 10.0.0 prior to February 14th, 2025.**
 
 If you are a new user, you may proceed with installing the Black Duck Detect Jenkins plugin as per [Downloading and Installing](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/downloadingandinstalling.html).
 
