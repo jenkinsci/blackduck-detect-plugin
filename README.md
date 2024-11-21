@@ -26,3 +26,5 @@ You can download the latest artifact from releases: https://updates.jenkins-ci.o
 
 # Documentation
 Documentation for Black Duck Detect for Jenkins can be found [here](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/jenkins.html)
+
+For full details of the each release, see [Release Notes](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/pluginreleasenotes.html)
