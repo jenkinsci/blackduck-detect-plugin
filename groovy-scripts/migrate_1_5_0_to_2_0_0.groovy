@@ -7,7 +7,7 @@ jenkins = Jenkins.getInstance()
 plugin = jenkins.getPluginManager().getPlugins().find { it.getShortName() == 'blackduck-detect' }
 
 if (plugin == null || !plugin.isActive() || plugin.isOlderThan(new VersionNumber('2.0.0'))) {
-  System.err.println('Version 2.0.0 or later of Black Duck Detect for Jenkins is either not installed or not activated.')
+  System.err.println('Version 2.0.0 or later of Synopsys Detect for Jenkins is either not installed or not activated.')
   System.err.println('Please upgrade and activate version 2.0.0 or later before running this script.')
   return
 }
@@ -15,12 +15,12 @@ if (plugin == null || !plugin.isActive() || plugin.isOlderThan(new VersionNumber
 oldGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.blackducksoftware.integration.detect.jenkins.post.DetectPostBuildStep.xml')
 
 if (oldGlobalConfigXmlPath && oldGlobalConfigXmlPath.exists()) {
-    print('Attempting to migrate Black Duck Detect global config... ')
+    print('Attempting to migrate Synopsys Detect global config... ')
     try {
         oldGlobalConfig = new XmlSlurper()
         						.parse(oldGlobalConfigXmlPath.read())
 
-        detectGlobalConfig = com.blackduck.integration.jenkins.detect.PluginHelper.getDetectGlobalConfig()
+        detectGlobalConfig = com.synopsys.integration.jenkins.detect.PluginHelper.getDetectGlobalConfig()
         detectGlobalConfig.setBlackDuckUrl(oldGlobalConfig.hubUrl.text())
         detectGlobalConfig.setBlackDuckCredentialsId(oldGlobalConfig.hubCredentialsId.text())
         detectGlobalConfig.setBlackDuckTimeout(Integer.valueOf(oldGlobalConfig.hubTimeout.text()))
@@ -62,7 +62,7 @@ for (item in items) {
         builder.append("Attempting to migrate ${item.getFullName()}... ")
         try {
             detectPropertiesToMigrate = oldDetectConfig.detectProperties.text()
-            newDetectConfig = new com.blackduck.integration.jenkins.detect.extensions.postbuild.DetectPostBuildStep(detectPropertiesToMigrate)
+            newDetectConfig = new com.synopsys.integration.jenkins.detect.extensions.postbuild.DetectPostBuildStep(detectPropertiesToMigrate)
             item.publishersList.add(newDetectConfig)
             item.save()
             builder.append('migrated successfully.')
