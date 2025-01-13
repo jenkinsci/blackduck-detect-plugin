@@ -17,8 +17,8 @@ synopsysGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.synopsys.
 blackduckGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.blackduck.integration.jenkins.detect.extensions.global.DetectGlobalConfig.xml')
 
 if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
-    println('Found existing Synopsys Detect global configuration.')
-    println('Attempting to migrate Synopsys Detect global configuration... ')
+    println('Found existing Synopsys Detect system configuration.')
+    println('Attempting to migrate Synopsys Detect system configuration... ')
     try {
         synopsysGlobalConfig = new XmlSlurper().parse(synopsysGlobalConfigXmlPath.read())
         println('synopsysGlobalConfig: ' + synopsysGlobalConfig)
@@ -33,7 +33,7 @@ if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
         synopsysGlobalConfigXmlPath.delete()
         print('Migrated global Detect Jenkins Plugin configuration successfully.')
     } catch (Exception e) {
-        System.err.print("Global Detect Jenkins Plugin configuration migration failed because ${e.getMessage()}.")
+        System.err.print("Detect Jenkins Plugin system configuration migration failed because ${e.getMessage()}.")
         // Uncomment the following line to debug
         // e.printStackTrace()
     }
