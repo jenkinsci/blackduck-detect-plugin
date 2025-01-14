@@ -5,25 +5,23 @@ start = System.currentTimeMillis()
 
 jenkins = Jenkins.getInstance()
 plugin = jenkins.getPluginManager().getPlugins().find { it.getShortName() == 'blackduck-detect' }
-println('plugin name: ' + plugin) // blackduck-detect is the name for both 9.0.0 and 10.0.0
 
 if (plugin == null || !plugin.isActive() || plugin.isOlderThan(new VersionNumber('10.0.0'))) {
     System.err.println('Version 10.0.0 of Synopsys Detect Jenkins Plugin is either not installed or not activated.')
-    System.err.println('Please install and activate Synopsys Detect Jenkins Plugin version 10.0.0 before running this migration script.') // prereq because that's what I've have tested with and 8.0.1 has reached end of support.
+    System.err.println('Please install and activate Synopsys Detect Jenkins Plugin version 10.0.0 before running this migration script.')
     return
 }
 
+// MIGRATE GLOBAL DETECT PLUGIN SETTINGS 
 synopsysGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.synopsys.integration.jenkins.detect.extensions.global.DetectGlobalConfig.xml')
 blackduckGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.blackduck.integration.jenkins.detect.extensions.global.DetectGlobalConfig.xml')
 
 if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
-    println('Found existing Synopsys Detect system configuration.')
-    println('Attempting to migrate Synopsys Detect system configuration... ')
+    println('Found existing Synopsys Detect global configuration.')
+    println('Attempting to migrate Synopsys Detect global configuration... ')
     try {
         synopsysGlobalConfig = new XmlSlurper().parse(synopsysGlobalConfigXmlPath.read())
-        println('synopsysGlobalConfig: ' + synopsysGlobalConfig)
 
-        // detectGlobalConfig = com.synopsys.integration.jenkins.detect.PluginHelper.getDetectGlobalConfig() ...... equivalent below vvv
         detectGlobalConfig = jenkins.model.GlobalConfiguration.all().get(com.blackduck.integration.jenkins.detect.extensions.global.DetectGlobalConfig.class)
 
         detectGlobalConfig.setBlackDuckUrl(synopsysGlobalConfig.blackDuckUrl.text())
@@ -31,16 +29,17 @@ if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
         detectGlobalConfig.setBlackDuckTimeout(Integer.valueOf(synopsysGlobalConfig.blackDuckTimeout.text()))
         detectGlobalConfig.setTrustBlackDuckCertificates(Boolean.valueOf(synopsysGlobalConfig.trustBlackDuckCertificates.text()))
         synopsysGlobalConfigXmlPath.delete()
-        print('Migrated global Detect Jenkins Plugin configuration successfully.')
+        print('Migrated Detect Jenkins Plugin global configuration successfully.')
     } catch (Exception e) {
-        System.err.print("Detect Jenkins Plugin system configuration migration failed because ${e.getMessage()}.")
+        System.err.print("Detect Jenkins Plugin global configuration migration failed because ${e.getMessage()}.")
         // Uncomment the following line to debug
         // e.printStackTrace()
+        return
     }
     println('')
 }
 
-// Now migrate the job specific configuration
+// MIGRATE FREESTYLE JOB CONFIGURATION(S)
 oldDataMonitor = OldDataMonitor.get(jenkins); // Tracks whether any data structure changes were corrected when loading XML, that could be resaved to migrate that data to the new format.
 items = null
 if (oldDataMonitor != null && oldDataMonitor.isActivated()) {
@@ -76,6 +75,7 @@ for (item in items) {
                 builder.append("Synopsys FreeStyle job configuration migration failed because ${e.getMessage()}.")
                 // Uncomment the following line to debug
                 // e.getStackTrace().each { builder.append(it.toString() + "\r\n") }
+                return
             }
             builder.append("\r\n")
         }
