@@ -7,8 +7,8 @@ jenkins = Jenkins.getInstance()
 plugin = jenkins.getPluginManager().getPlugins().find { it.getShortName() == 'blackduck-detect' }
 
 if (plugin == null || !plugin.isActive() || plugin.isOlderThan(new VersionNumber('10.0.0'))) {
-    System.err.println('Version 10.0.0 of Synopsys Detect Jenkins Plugin is either not installed or not activated.')
-    System.err.println('Please install and activate Synopsys Detect Jenkins Plugin version 10.0.0 before running this migration script.')
+    System.err.println('Version 10.0.0 of Black Duck Detect Jenkins Plugin is either not installed or not activated.')
+    System.err.println('Please install and activate Black Duck Detect Jenkins Plugin version 10.0.0 before running this migration script.')
     return
 }
 
