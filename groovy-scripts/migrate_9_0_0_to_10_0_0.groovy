@@ -18,7 +18,7 @@ blackduckGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.blackduc
 
 if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
     println('Found existing Synopsys Detect global configuration.')
-    println('Attempting to migrate Synopsys Detect global configuration... ')
+    println('Attempting to migrate Synopsys Detect global configuration to Black Duck Detect global configuration... ')
     try {
         synopsysGlobalConfig = new XmlSlurper().parse(synopsysGlobalConfigXmlPath.read())
 
