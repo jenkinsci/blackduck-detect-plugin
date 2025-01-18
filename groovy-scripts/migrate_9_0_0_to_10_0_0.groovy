@@ -6,12 +6,6 @@ start = System.currentTimeMillis()
 jenkins = Jenkins.getInstance()
 plugin = jenkins.getPluginManager().getPlugins().find { it.getShortName() == 'blackduck-detect' }
 
-if (plugin == null || !plugin.isActive() || plugin.isOlderThan(new VersionNumber('10.0.0'))) {
-    System.err.println('Version 10.0.0 of Black Duck Detect Jenkins Plugin is either not installed or not activated.')
-    System.err.println('Please install and activate Black Duck Detect Jenkins Plugin version 10.0.0 before running this migration script.')
-    return
-}
-
 // MIGRATE GLOBAL DETECT PLUGIN SETTINGS 
 synopsysGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.synopsys.integration.jenkins.detect.extensions.global.DetectGlobalConfig.xml')
 blackduckGlobalConfigXmlPath = new FilePath(jenkins.getRootPath(), 'com.blackduck.integration.jenkins.detect.extensions.global.DetectGlobalConfig.xml')
@@ -31,7 +25,7 @@ if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
         synopsysGlobalConfigXmlPath.delete()
         print('Migrated Detect Jenkins Plugin global configuration successfully.')
     } catch (Exception e) {
-        System.err.print("Detect Jenkins Plugin global configuration migration failed because ${e.getMessage()}.")
+        println("Detect Jenkins Plugin global configuration migration failed because ${e.getMessage()}.")
         // Uncomment the following line to debug
         // e.printStackTrace()
         return
@@ -53,38 +47,59 @@ if (oldDataMonitor != null && oldDataMonitor.isActivated()) {
 // If performance is an issue, you can comment this line out-- this is just to make the migration output prettier
 items = items.sort{it.getFullName()}
 
-builder = new StringBuilder()
 for (item in items) {
     // Items can be many things-- only FreeStyle jobs are migratable
     if (item instanceof FreeStyleProject) {
         configXml = item.getConfigFile().getFile();
+        // Get existing Detect post-build configuration for this FreeStyle job
         synopsysDetectConfig = new XmlSlurper()
                 .parse(configXml)
                 .'**'
                 .find { it.name() == 'com.synopsys.integration.jenkins.detect.extensions.postbuild.DetectPostBuildStep' }
 
         if (synopsysDetectConfig) {
-            builder.append("Attempting to migrate ${item.getFullName()}... ")
+            println("Attempting to migrate ${item.getFullName()}... ")
             try {
                 detectPropertiesToMigrate = synopsysDetectConfig.detectProperties.text()
                 blackDuckDetectConfig = new com.blackduck.integration.jenkins.detect.extensions.postbuild.DetectPostBuildStep(detectPropertiesToMigrate)
+                println("Migrated Detect properties.")
+
+                synopsysDetectDownloadStrategyClass = synopsysDetectConfig.downloadStrategyOverride.@class.text()
+                if (synopsysDetectDownloadStrategyClass) {
+                    println("Attempting to migrate download strategy: " + synopsysDetectDownloadStrategyClass)
+                    // Instantiate the appropriate DetectDownloadStrategy
+                    def downloadStrategyInstance
+                    if (synopsysDetectDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.AirGapDownloadStrategy') {
+                        downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.AirGapDownloadStrategy()
+                        // TODO additional Air Gap configuration: test to confirm <airGapInstallationName></airGapInstallationName> is all thats needed
+                    } else if (synopsysDetectDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.ScriptOrJarDownloadStrategy') {
+                        downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.ScriptOrJarDownloadStrategy()
+                    } else if (synopsysDetectDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.InheritFromGlobalDownloadStrategy') {
+                        downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.InheritFromGlobalDownloadStrategy()
+                    }
+
+                    if (downloadStrategyInstance != null) {
+                        blackDuckDetectConfig.downloadStrategyOverride = downloadStrategyInstance
+                        println("Migrated download strategy.")
+                    }
+                }
+
                 item.publishersList.add(blackDuckDetectConfig)
                 item.save()
-                builder.append('Migrated FreeStyle job configuration successfully.')
+                println('Migrated FreeStyle job configuration successfully.')
             } catch (Exception e) {
-                builder.append("Synopsys FreeStyle job configuration migration failed because ${e.getMessage()}.")
+                println("Synopsys FreeStyle job configuration migration failed because ${e.getMessage()}.")
                 // Uncomment the following line to debug
-                // e.getStackTrace().each { builder.append(it.toString() + "\r\n") }
+                // e.getStackTrace().each { println(it.toString() + "\r\n") }
                 return
             }
-            builder.append("\r\n")
+            println("\r\n")
         }
         else {
             println("Did not find any Synopsys FreeStyle job configurations to migrate.")
         }
     }
 }
-println(builder.toString())
 
 end = System.currentTimeMillis()
 println("Migrated in ${end-start}ms")
