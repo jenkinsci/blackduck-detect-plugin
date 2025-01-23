@@ -1,3 +1,5 @@
+import groovy.xml.MarkupBuilder
+import groovy.xml.XmlUtil
 import hudson.diagnosis.OldDataMonitor;
 import hudson.util.VersionNumber;
 
@@ -31,6 +33,40 @@ if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
         return
     }
     println('')
+}
+
+// MIGRATE AIRGAP CONFIGURATIONS
+synopsysAirGapInstallations = new FilePath(jenkins.getRootPath(), 'com.synopsys.integration.jenkins.detect.extensions.tool.DetectAirGapInstallation.xml')
+blackdDuckAirGapInstallations = new FilePath(jenkins.getRootPath(),'com.blackduck.integration.jenkins.detect.extensions.tool.DetectAirGapInstallation.xml')
+
+println('Found existing Synopsys Detect airgap configuration.')
+println('Attempting to migrate Synopsys Detect air gap configuration to Black Duck Detect air gap configuration... ')
+try {
+
+    def xmlContent = new XmlSlurper().parse(synopsysAirGapInstallations.read())
+
+    xmlContent.replaceNode {
+        'com.blackduck.integration.jenkins.detect.extensions.tool.DetectAirGapInstallation_-DescriptorImpl' (it.attributes(), it.children())
+    }
+
+    xmlContent.installations.'com.synopsys.integration.jenkins.detect.extensions.tool.DetectAirGapInstallation'.replaceNode {
+        'com.blackduck.integration.jenkins.detect.extensions.tool.DetectAirGapInstallation' (it.attributes(), it.children())
+    }
+
+    xmlContent.installations[0].@class = 'com.blackduck.integration.jenkins.detect.extensions.tool.DetectAirGapInstallation-array'
+    xmlContent.@plugin = 'blackduck-detect@10.0.0'
+
+
+    def newBlackDuckAirGapFile = new File(blackdDuckAirGapInstallations.getRemote())
+    def writer = new FileWriter(newBlackDuckAirGapFile)
+    XmlUtil.serialize(xmlContent, writer)
+
+    println('Migrated Detect Jenkins Plugin air gap configuration successfully.')
+} catch (Exception e) {
+    println("Detect Jenkins Plugin air gap configuration migration failed because ${e.getMessage()}.")
+    // Uncomment the following line to debug
+    // e.printStackTrace()
+    return
 }
 
 // MIGRATE FREESTYLE JOB CONFIGURATION(S)
@@ -71,7 +107,7 @@ for (item in items) {
                     def downloadStrategyInstance
                     if (synopsysDetectDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.AirGapDownloadStrategy') {
                         downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.AirGapDownloadStrategy()
-                        // TODO additional Air Gap configuration: test to confirm <airGapInstallationName></airGapInstallationName> is all thats needed
+                        downloadStrategyInstance.airGapInstallationName = synopsysDetectConfig.downloadStrategyOverride.airGapInstallationName
                     } else if (synopsysDetectDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.ScriptOrJarDownloadStrategy') {
                         downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.ScriptOrJarDownloadStrategy()
                     } else if (synopsysDetectDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.InheritFromGlobalDownloadStrategy') {
