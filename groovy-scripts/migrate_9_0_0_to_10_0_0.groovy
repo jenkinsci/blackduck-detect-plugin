@@ -20,11 +20,30 @@ if (synopsysGlobalConfigXmlPath && synopsysGlobalConfigXmlPath.exists()) {
 
         detectGlobalConfig = jenkins.model.GlobalConfiguration.all().get(com.blackduck.integration.jenkins.detect.extensions.global.DetectGlobalConfig.class)
 
+        // MIGRATE GLOBAL AIRGAP SETTINGS
+        // Find download strategy
+        synopsysDetectGlobalDownloadStrategyClass = synopsysGlobalConfig.downloadStrategy.@class.text()
+        if (synopsysDetectGlobalDownloadStrategyClass) {
+            println("Attempting to migrate global download strategy: " + synopsysDetectGlobalDownloadStrategyClass)
+            // Instantiate the appropriate DetectDownloadStrategy
+            def downloadStrategyInstance
+            if (synopsysDetectGlobalDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.AirGapDownloadStrategy') {
+                downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.AirGapDownloadStrategy()
+                downloadStrategyInstance.airGapInstallationName = synopsysGlobalConfig.downloadStrategy.airGapInstallationName
+            } else if (synopsysDetectGlobalDownloadStrategyClass == 'com.synopsys.integration.jenkins.detect.extensions.ScriptOrJarDownloadStrategy') {
+                downloadStrategyInstance = new com.blackduck.integration.jenkins.detect.extensions.ScriptOrJarDownloadStrategy()
+            }
+
+            if (downloadStrategyInstance != null) {
+                detectGlobalConfig.downloadStrategy = downloadStrategyInstance
+                println("Migrated download strategy.")
+            }
+        }
+
         detectGlobalConfig.setBlackDuckUrl(synopsysGlobalConfig.blackDuckUrl.text())
         detectGlobalConfig.setBlackDuckCredentialsId(synopsysGlobalConfig.blackDuckCredentialsId.text())
         detectGlobalConfig.setBlackDuckTimeout(Integer.valueOf(synopsysGlobalConfig.blackDuckTimeout.text()))
         detectGlobalConfig.setTrustBlackDuckCertificates(Boolean.valueOf(synopsysGlobalConfig.trustBlackDuckCertificates.text()))
-        synopsysGlobalConfigXmlPath.delete()
         print('Migrated Detect Jenkins Plugin global configuration successfully.')
     } catch (Exception e) {
         println("Detect Jenkins Plugin global configuration migration failed because ${e.getMessage()}.")
