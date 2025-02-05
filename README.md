@@ -15,7 +15,9 @@ For existing users, the Black Duck Detect Jenkins plugin should be considered a 
 
 **For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to Black Duck Detect Jenkins plugin version 10.0.0 prior to February 14th, 2025.**
 
-If you are a new user, you may proceed with installing the Black Duck Detect Jenkins plugin as per [Downloading and Installing](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/downloadingandinstalling.html).
+Refer to the [Community Article](https://community.blackduck.com/s/article/Migrating-Detect-Jenkins-Plugin-from-9-0-0-to-10-0-0) with an example upgrade script that can be run by users who are upgrading from 9.0.0 to 10.0.0.
+
+If you are a new user, you may proeed with installing the Black Duck Detect Jenkins plugin as per [Downloading and Installing](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/downloadingandinstalling.html).
 
 # Build
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.blackducksoftware.integration%3Ablackduck-detect&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.blackducksoftware.integration%3Ablackduck-detect)
