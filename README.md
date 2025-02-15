@@ -3,7 +3,7 @@ Black Duck Detect for Jenkins simplifies running Detect in your Jenkins builds.
 
 The Synopsys Software Integrity Group is now Black Duck Software, Inc.
 
-As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decommissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.
+As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decommissioned in March, 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.
 Refer to the [Black Duck Detect Domain Change FAQ](https://community.blackduck.com/s/article/Detect-Overview-of-Domain-Changes-for-Black-Duck).
 
 For existing users, the Black Duck Detect Jenkins plugin should be considered a fresh installation as the domain has changed.
@@ -13,7 +13,7 @@ For existing users, the Black Duck Detect Jenkins plugin should be considered a 
 * Before moving from the Synopsys Detect Jenkins plugin to the Black Duck® Detect Jenkins plugin, you should record your existing system configuration.
 * Review the additional information before upgrading from the Synopsys Detect Jenkins plugin to the Black Duck® Detect Jenkins plugin under [Downloading and Installing](https://documentation.blackduck.com/bundle/detect/page/integrations/jenkinsplugin/downloadingandinstalling.html#updating-existing-jenkins).  There are changes that need to be made to ensure continued successful execution within pipelines.
 
-**For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to Black Duck Detect Jenkins plugin version 10.0.0 prior to February 14th, 2025.**
+**For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to Black Duck Detect Jenkins plugin version 10.0.0 prior to March 31st, 2025.**
 
 Refer to the [Community Article](https://community.blackduck.com/s/article/Migrating-Detect-Jenkins-Plugin-from-9-0-0-to-10-0-0) with an example upgrade script that can be run by users who are upgrading from 9.0.0 to 10.0.0.
 
