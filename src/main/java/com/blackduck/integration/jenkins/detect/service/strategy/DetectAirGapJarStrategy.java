@@ -118,28 +118,32 @@ public class DetectAirGapJarStrategy extends DetectExecutionStrategy {
             FileFilter backUpFileFilter = file -> file.getName().startsWith(FALLBACK_DETECT_JAR_PREFIX) && file.getName().endsWith(DETECT_JAR_SUFFIX);
             File[] foundFallbackJars = new File(airGapBaseDir).listFiles(backUpFileFilter);
 
-            if ((foundAirGapJars == null || foundAirGapJars.length == 0) && (foundFallbackJars == null || foundFallbackJars.length == 0)) {
+            try {
+                return findAirGapJar(airGapBaseDir, foundAirGapJars);
+            } catch (Exception e) {
+                if(foundAirGapJars == null || foundAirGapJars.length == 0) {
+                    return findAirGapJar(airGapBaseDir, foundFallbackJars);
+                } else {
+                    throw e;
+                }
+            }
+        }
+
+
+        private String findAirGapJar(String airGapBaseDir, File[] foundJars) throws DetectJenkinsException {
+            if (foundJars == null || foundJars.length == 0) {
                 throw new DetectJenkinsException(String.format(
                         "Expected 1 jar from Detect Air Gap tool installation at <%s> and did not find any. Check your Jenkins plugin and tool configuration.",
                         airGapBaseDir
                 ));
-            } else if ((foundAirGapJars != null && foundAirGapJars.length > 1) || (foundFallbackJars != null && foundFallbackJars.length > 1)) {
+            } else if (foundJars.length > 1) {
                 throw new DetectJenkinsException(
                         String.format(
                                 "Expected 1 jar from Detect Air Gap tool installation at <%s> and instead found multiple jars. Check your Jenkins plugin and tool configuration.",
                                 airGapBaseDir
                         ));
             } else {
-                if (foundAirGapJars != null && foundAirGapJars.length == 1) {
-                    return foundAirGapJars[0].toString();
-                } else if(foundFallbackJars != null && foundFallbackJars.length == 1) {
-                    return foundFallbackJars[0].toString();
-                } else {
-                    throw new DetectJenkinsException(String.format(
-                            "Expected 1 jar from Detect Air Gap tool installation at <%s> and did not find any. Check your Jenkins plugin and tool configuration.",
-                            airGapBaseDir
-                    ));
-                }
+                return foundJars[0].toString();
             }
         }
     }
