@@ -67,7 +67,7 @@ artifactory {
 }
 
 jenkinsPlugin {
-    jenkinsVersion = '2.492.3' // as of version 0.40.0 of jpi, it's jenkinsVersion...
+    jenkinsVersion = '2.462.3' // as of version 0.40.0 of jpi, it's jenkinsVersion...
     displayName = 'Black Duck Detect'
     compatibleSinceVersion = '11.0.0'
     url = 'https://github.com/jenkinsci/blackduck-detect-plugin'
