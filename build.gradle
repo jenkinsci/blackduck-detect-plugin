@@ -67,7 +67,7 @@ artifactory {
 }
 
 jenkinsPlugin {
-    jenkinsVersion = '2.462.3' // as of version 0.40.0 of jpi, it's jenkinsVersion...
+    jenkinsVersion = '2.492.3' // as of version 0.40.0 of jpi, it's jenkinsVersion...
     displayName = 'Black Duck Detect'
     compatibleSinceVersion = '11.0.0'
     url = 'https://github.com/jenkinsci/blackduck-detect-plugin'
@@ -83,7 +83,7 @@ dependencies {
     implementation 'org.checkerframework:checker-qual:3.33.0'
     implementation 'com.google.j2objc:j2objc-annotations:2.8'
 
-    implementation 'com.blackduck.integration:blackduck-common:67.0.1'
+    implementation 'com.blackduck.integration:blackduck-common:67.0.20'
     implementation('com.blackduck.integration:jenkins-common:1.0.0'){
         exclude group: "org.jenkins-ci.main", module: "jenkins-core"
         exclude group: "org.jenkins-ci.plugins", module: "credentials"
