@@ -46,8 +46,8 @@ public class DetectRunnerTest {
     private static final String JDK_HOME = "/tmp/jdk/bin/java";
     private static final String DETECT_JAR_PATH = "/tmp/detect.jar";
     private static final String DETECT_AIRGAP_JAR_PATH = "/tmp/airgap/detect.jar";
-    private static final String DETECT_SHELL_PATH = "/tmp/detect10.sh";
-    private static final String DETECT_POWERSHELL_PATH = "/tmp/detect10.ps1";
+    private static final String DETECT_SHELL_PATH = "/tmp/detect11.sh";
+    private static final String DETECT_POWERSHELL_PATH = "/tmp/detect11.ps1";
     private static final String AIRGAP_TOOL_NAME = "AirGap_Tool";
     private static final String AIRGAP_TOOL_PATH = "/air/gap/tool/path";
     private static final AirGapDownloadStrategy AIRGAP_DOWNLOAD_STRATEGY = new AirGapDownloadStrategy();
