@@ -3,7 +3,8 @@ package com.blackduck.integration.jenkins.detect.service.strategy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.jenkins.extensions.JenkinsIntLogger;
@@ -32,7 +32,8 @@ import com.blackduck.integration.util.IntEnvironmentVariables;
 import hudson.model.TaskListener;
 import jenkins.security.MasterToSlaveCallable;
 
-public class DetectJarStrategyTest {
+class DetectJarStrategyTest {
+
     private static final String JAVA_EXECUTABLE = (SystemUtils.IS_OS_WINDOWS) ? "java.exe" : "java";
     private static final String REMOTE_JDK_HOME = new File("/test/java/home/path").getAbsolutePath();
     private static final String REMOTE_JAVA_RELATIVE_PATH = new File("/bin/" + JAVA_EXECUTABLE).getPath();
@@ -44,7 +45,7 @@ public class DetectJarStrategyTest {
     private JenkinsIntLogger logger;
     private ByteArrayOutputStream byteArrayOutputStream;
 
-    public static Stream<Arguments> testSetupCallableJavaHomeSource() {
+    static Stream<Arguments> testSetupCallableJavaHomeSource() {
         return Stream.of(
             Arguments.of(" ", System.getProperty("user.dir") + File.separator + " " + REMOTE_JAVA_RELATIVE_PATH),
             Arguments.of("", new File(REMOTE_JAVA_RELATIVE_PATH).getAbsolutePath()),
@@ -54,32 +55,32 @@ public class DetectJarStrategyTest {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         environmentVariables = IntEnvironmentVariables.empty();
         environmentVariables.put("PATH", EXPECTED_PATH);
 
-        TaskListener taskListener = Mockito.mock(TaskListener.class);
+        TaskListener taskListener = mock(TaskListener.class);
         byteArrayOutputStream = new ByteArrayOutputStream();
-        Mockito.when(taskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
+        when(taskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
 
         logger = JenkinsIntLogger.logToListener(taskListener);
     }
 
     @Test
-    public void testArgumentEscaper() {
+    void testArgumentEscaper() {
         DetectJarStrategy detectJarStrategy = new DetectJarStrategy(logger, environmentVariables, REMOTE_JDK_HOME, DETECT_JAR_PATH);
         assertEquals(Function.identity(), detectJarStrategy.getArgumentEscaper());
     }
 
     @ParameterizedTest
     @MethodSource("testSetupCallableJavaHomeSource")
-    public void testSetupCallableJavaHome(String javaHome, String expectedJavaPath) {
+    void testSetupCallableJavaHome(String javaHome, String expectedJavaPath) throws Exception {
         this.executeAndValidateSetupCallable(javaHome, expectedJavaPath);
         this.validateLogsPresentInfo();
     }
 
     @Test
-    public void testSetupCallableInvalidJdkHome() {
+    void testSetupCallableInvalidJdkHome() throws Exception {
         this.executeAndValidateSetupCallable("\u0000", JAVA_EXECUTABLE);
         assertTrue(
             byteArrayOutputStream.toString().contains("Could not set path to Java executable, falling back to PATH."),
@@ -89,7 +90,7 @@ public class DetectJarStrategyTest {
     }
 
     @Test
-    public void testSetupCallableWarnLogging() {
+    void testSetupCallableWarnLogging() throws Exception {
         logger.setLogLevel(LogLevel.WARN);
         this.executeAndValidateSetupCallable(REMOTE_JDK_HOME, EXPECTED_JAVA_FULL_PATH);
         this.validateLogsNotPresentInfo();
@@ -97,7 +98,7 @@ public class DetectJarStrategyTest {
     }
 
     @Test
-    public void testSetupCallableInfoLogging() {
+    void testSetupCallableInfoLogging() throws Exception {
         logger.setLogLevel(LogLevel.INFO);
         this.executeAndValidateSetupCallable(REMOTE_JDK_HOME, EXPECTED_JAVA_FULL_PATH);
         this.validateLogsPresentInfo();
@@ -105,7 +106,7 @@ public class DetectJarStrategyTest {
     }
 
     @Test
-    public void testSetupCallableDebugLogging() {
+    void testSetupCallableDebugLogging() throws Exception {
         logger.setLogLevel(LogLevel.DEBUG);
         this.executeAndValidateSetupCallable(REMOTE_JDK_HOME, EXPECTED_JAVA_FULL_PATH);
         this.validateLogsPresentInfo();
@@ -113,7 +114,7 @@ public class DetectJarStrategyTest {
     }
 
     @Test
-    public void testSetupCallableTraceLogging() {
+    void testSetupCallableTraceLogging() throws Exception {
         logger.setLogLevel(LogLevel.TRACE);
         this.executeAndValidateSetupCallable(REMOTE_JDK_HOME, EXPECTED_JAVA_FULL_PATH);
         this.validateLogsPresentInfo();
@@ -121,41 +122,33 @@ public class DetectJarStrategyTest {
     }
 
     @Test
-    public void testSetupCallableDebugLoggingJavaVersionFailed() {
+    void testSetupCallableDebugLoggingJavaVersionFailed() throws Exception {
         logger.setLogLevel(LogLevel.DEBUG);
-        try {
-            String badJavaHome = Files.createTempDirectory(null).toRealPath().toString();
-            String expectedBadJavaPath = badJavaHome + REMOTE_JAVA_RELATIVE_PATH;
-            this.executeAndValidateSetupCallable(badJavaHome, expectedBadJavaPath);
+        String badJavaHome = Files.createTempDirectory(null).toRealPath().toString();
+        String expectedBadJavaPath = badJavaHome + REMOTE_JAVA_RELATIVE_PATH;
+        this.executeAndValidateSetupCallable(badJavaHome, expectedBadJavaPath);
 
-            String expectedError = (SystemUtils.IS_OS_WINDOWS) ? "The system cannot find the file specified" : "No such file or directory";
-            assertTrue(byteArrayOutputStream.toString().contains(expectedError), "Log does not contain error for starting process.");
-        } catch (IOException e) {
-            fail("Unexpected exception was thrown in test code: ", e);
-        }
+        String expectedError = (SystemUtils.IS_OS_WINDOWS) ? "The system cannot find the file specified" : "No such file or directory";
+        assertTrue(byteArrayOutputStream.toString().contains(expectedError), "Log does not contain error for starting process.");
     }
 
     @Test
-    public void testSetupCallableDebugLoggingJavaVersionSuccess() {
+    void testSetupCallableDebugLoggingJavaVersionSuccess() throws Exception {
         logger.setLogLevel(LogLevel.DEBUG);
         this.executeAndValidateSetupCallable(null, JAVA_EXECUTABLE);
 
         assertTrue(byteArrayOutputStream.toString().contains("Java version: "), "Log does not contain entry for Java Version heading.");
     }
 
-    private void executeAndValidateSetupCallable(String javaHomeInput, String expectedJavaPath) {
-        try {
-            DetectJarStrategy detectJarStrategy = new DetectJarStrategy(logger, environmentVariables, javaHomeInput, DETECT_JAR_PATH);
-            MasterToSlaveCallable<ArrayList<String>, IntegrationException> setupCallable = detectJarStrategy.getSetupCallable();
-            ArrayList<String> jarExecutionElements = setupCallable.call();
-            String resolvedExpectedJavaPath = resolveDirectory(expectedJavaPath);
+    private void executeAndValidateSetupCallable(String javaHomeInput, String expectedJavaPath) throws Exception {
+        DetectJarStrategy detectJarStrategy = new DetectJarStrategy(logger, environmentVariables, javaHomeInput, DETECT_JAR_PATH);
+        MasterToSlaveCallable<ArrayList<String>, IntegrationException> setupCallable = detectJarStrategy.getSetupCallable();
+        ArrayList<String> jarExecutionElements = setupCallable.call();
+        String resolvedExpectedJavaPath = resolveDirectory(expectedJavaPath);
 
-            assertEquals(resolvedExpectedJavaPath, jarExecutionElements.get(0));
-            assertEquals("-jar", jarExecutionElements.get(1));
-            assertEquals(DETECT_JAR_PATH, jarExecutionElements.get(2));
-        } catch (IntegrationException e) {
-            fail("An unexpected exception occurred: ", e);
-        }
+        assertEquals(resolvedExpectedJavaPath, jarExecutionElements.get(0));
+        assertEquals("-jar", jarExecutionElements.get(1));
+        assertEquals(DETECT_JAR_PATH, jarExecutionElements.get(2));
     }
 
     private String resolveDirectory(String inputDirectory) {

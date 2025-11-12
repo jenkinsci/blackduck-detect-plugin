@@ -2,6 +2,8 @@ package com.blackduck.integration.jenkins.detect.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -9,7 +11,6 @@ import java.io.PrintStream;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.blackduck.integration.jenkins.detect.service.strategy.RemoteJavaService;
 import com.blackduck.integration.jenkins.extensions.JenkinsIntLogger;
@@ -18,24 +19,25 @@ import com.blackduck.integration.util.IntEnvironmentVariables;
 
 import hudson.model.TaskListener;
 
-public class RemoteJavaServiceTest {
+class RemoteJavaServiceTest {
+
     private static final String JAVA_EXECUTABLE_BIN = (SystemUtils.IS_OS_WINDOWS) ? "\\bin\\java.exe" : "/bin/java";
 
-    public String testRemoteJdkHome = "/test/remote/jdk/home";
-    public String expectedTestRemoteJdkHome = testRemoteJdkHome + JAVA_EXECUTABLE_BIN;
-    public String expectedDetectJavaPath = "/test/detect/java/path";
-    public String testJavaPath = "/test/java/path";
-    public String expectedTestJavaPath = testJavaPath + JAVA_EXECUTABLE_BIN;
+    private String testRemoteJdkHome = "/test/remote/jdk/home";
+    private String expectedTestRemoteJdkHome = testRemoteJdkHome + JAVA_EXECUTABLE_BIN;
+    private String expectedDetectJavaPath = "/test/detect/java/path";
+    private String testJavaPath = "/test/java/path";
+    private String expectedTestJavaPath = testJavaPath + JAVA_EXECUTABLE_BIN;
 
     private final IntEnvironmentVariables environmentVariables = IntEnvironmentVariables.empty();
     private JenkinsIntLogger logger;
     private ByteArrayOutputStream byteArrayOutputStream;
 
     @BeforeEach
-    public void setup() {
-        TaskListener taskListener = Mockito.mock(TaskListener.class);
+    void setup() {
+        TaskListener taskListener = mock(TaskListener.class);
         byteArrayOutputStream = new ByteArrayOutputStream();
-        Mockito.when(taskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
+        when(taskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
 
         logger = JenkinsIntLogger.logToListener(taskListener);
         logger.setLogLevel(LogLevel.DEBUG);
@@ -50,7 +52,7 @@ public class RemoteJavaServiceTest {
     }
 
     @Test
-    public void testRemoteJdkHomeSet() {
+    void testRemoteJdkHomeSet() {
         RemoteJavaService remoteJavaService = new RemoteJavaService(logger, testRemoteJdkHome, environmentVariables.getVariables());
 
         assertEquals(expectedTestRemoteJdkHome, remoteJavaService.getJavaExecutablePath(), "Could not set Java path by using " + testRemoteJdkHome);
@@ -59,7 +61,7 @@ public class RemoteJavaServiceTest {
     }
 
     @Test
-    public void testDetectJavaPathSet() {
+    void testDetectJavaPathSet() {
         environmentVariables.put(RemoteJavaService.DETECT_JAVA_PATH, expectedDetectJavaPath);
         RemoteJavaService remoteJavaService = new RemoteJavaService(logger, null, environmentVariables.getVariables());
 
@@ -69,7 +71,7 @@ public class RemoteJavaServiceTest {
     }
 
     @Test
-    public void testJavaPathSet() {
+    void testJavaPathSet() {
         environmentVariables.put(RemoteJavaService.JAVA_HOME, testJavaPath);
         RemoteJavaService remoteJavaService = new RemoteJavaService(logger, null, environmentVariables.getVariables());
 
@@ -79,7 +81,7 @@ public class RemoteJavaServiceTest {
     }
 
     @Test
-    public void testContainAllOptions() {
+    void testContainAllOptions() {
         environmentVariables.put(RemoteJavaService.DETECT_JAVA_PATH, expectedDetectJavaPath);
         environmentVariables.put(RemoteJavaService.JAVA_HOME, testJavaPath);
         RemoteJavaService remoteJavaService = new RemoteJavaService(logger, testRemoteJdkHome, environmentVariables.getVariables());
@@ -90,7 +92,7 @@ public class RemoteJavaServiceTest {
     }
 
     @Test
-    public void testContainBothEnvVars() {
+    void testContainBothEnvVars() {
         environmentVariables.put(RemoteJavaService.DETECT_JAVA_PATH, expectedDetectJavaPath);
         environmentVariables.put(RemoteJavaService.JAVA_HOME, testJavaPath);
         RemoteJavaService remoteJavaService = new RemoteJavaService(logger, null, environmentVariables.getVariables());

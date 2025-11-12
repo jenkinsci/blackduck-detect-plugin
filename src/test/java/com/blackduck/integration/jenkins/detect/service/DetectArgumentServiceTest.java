@@ -2,6 +2,8 @@ package com.blackduck.integration.jenkins.detect.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -15,7 +17,6 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.blackduck.integration.jenkins.extensions.JenkinsIntLogger;
 import com.blackduck.integration.jenkins.wrapper.JenkinsVersionHelper;
@@ -24,8 +25,8 @@ import com.blackduck.integration.util.IntEnvironmentVariables;
 
 import hudson.model.TaskListener;
 
-public class DetectArgumentServiceTest {
-    private final JenkinsVersionHelper jenkinsVersionHelper = Mockito.mock(JenkinsVersionHelper.class);
+class DetectArgumentServiceTest {
+    private final JenkinsVersionHelper jenkinsVersionHelper = mock(JenkinsVersionHelper.class);
 
     private static final String ERROR_MESSAGE = "Output Detect Command does not contain: ";
     private static final String LOGGING_LEVEL_KEY = "--logging.level.detect";
@@ -48,9 +49,9 @@ public class DetectArgumentServiceTest {
     private Map<String, String> expectedArgsFromPlugin;
 
     @BeforeEach
-    public void setUp() {
+    void setup() {
         // Setup logger
-        TaskListener taskListener = Mockito.mock(TaskListener.class);
+        TaskListener taskListener = mock(TaskListener.class);
         JenkinsIntLogger jenkinsIntLogger = JenkinsIntLogger.logToListener(taskListener);
 
         jenkinsIntLogger.setLogLevel(LogLevel.DEBUG);
@@ -59,9 +60,9 @@ public class DetectArgumentServiceTest {
 
         // Set default expected values. Tests will apply different if needed
         byteArrayOutputStream = new ByteArrayOutputStream();
-        Mockito.when(taskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
-        Mockito.when(jenkinsVersionHelper.getJenkinsVersion()).thenReturn(Optional.of(EXPECTED_JENKINS_VERSION));
-        Mockito.when(jenkinsVersionHelper.getPluginVersion(PLUGIN_NAME)).thenReturn(Optional.of(EXPECTED_JENKINS_PLUGIN_VERSION));
+        when(taskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
+        when(jenkinsVersionHelper.getJenkinsVersion()).thenReturn(Optional.of(EXPECTED_JENKINS_VERSION));
+        when(jenkinsVersionHelper.getPluginVersion(PLUGIN_NAME)).thenReturn(Optional.of(EXPECTED_JENKINS_PLUGIN_VERSION));
 
         // These are the standard input detect properties
         inputDetectProperties = new LinkedHashMap<>();
@@ -89,7 +90,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testGetDetectArguments() {
+    void testGetDetectArguments() {
         List<String> detectCommandLine = detectArgumentService.getDetectArguments(
             intEnvironmentVariables,
             strategyEscaper,
@@ -103,7 +104,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testShouldEscapeFalse() {
+    void testShouldEscapeFalse() {
         intEnvironmentVariables.put("DETECT_PLUGIN_ESCAPING", "false");
 
         List<String> detectCommandLine = detectArgumentService.getDetectArguments(
@@ -119,7 +120,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testVariableReplaced() {
+    void testVariableReplaced() {
         // Set up intEnvironmentVariables to only contain custom variable to verify search and replace of the same
         IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.empty();
         intEnvironmentVariables.put("TRUST_CERT", "false");
@@ -139,7 +140,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testVariableNotReplaced() {
+    void testVariableNotReplaced() {
         inputDetectProperties.put("$VISIBLE", "visible");
 
         List<String> detectCommandLine = detectArgumentService.getDetectArguments(
@@ -158,7 +159,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testCustomLogLevel() {
+    void testCustomLogLevel() {
         String expectedCustomLogLevel = "TestLogLevel";
         inputDetectProperties.put(LOGGING_LEVEL_KEY, expectedCustomLogLevel);
         expectedArgsFromPlugin.replace(LOGGING_LEVEL_KEY, expectedCustomLogLevel);
@@ -176,7 +177,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testNoDetectArguments() {
+    void testNoDetectArguments() {
         List<String> detectCommandLine = detectArgumentService.getDetectArguments(intEnvironmentVariables, strategyEscaper, invocationParameters, "\t");
 
         assertEquals(4, detectCommandLine.size()); // Invocation args (1) + passed args (0) + auto added args (3)
@@ -185,9 +186,9 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testUnknownJenkinsVersion() {
-        Mockito.when(jenkinsVersionHelper.getJenkinsVersion()).thenReturn(Optional.empty());
-        Mockito.when(jenkinsVersionHelper.getPluginVersion(PLUGIN_NAME)).thenReturn(Optional.empty());
+    void testUnknownJenkinsVersion() {
+        when(jenkinsVersionHelper.getJenkinsVersion()).thenReturn(Optional.empty());
+        when(jenkinsVersionHelper.getPluginVersion(PLUGIN_NAME)).thenReturn(Optional.empty());
         expectedArgsFromPlugin.replace(JENKINS_VERSION_PARAM, EXPECTED_JENKINS_VERSION, "<unknown>");
         expectedArgsFromPlugin.replace(PLUGIN_VERSION_PARAM, EXPECTED_JENKINS_PLUGIN_VERSION, "<unknown>");
 
@@ -204,7 +205,7 @@ public class DetectArgumentServiceTest {
     }
 
     @Test
-    public void testEmptyIntEnvironmentVariables() {
+    void testEmptyIntEnvironmentVariables() {
         IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.empty();
 
         List<String> detectCommandLine = detectArgumentService.getDetectArguments(
