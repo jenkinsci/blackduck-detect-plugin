@@ -3,9 +3,10 @@ package com.blackduck.integration.jenkins.detect.service.strategy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -21,7 +22,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.jenkins.extensions.JenkinsIntLogger;
@@ -30,16 +30,17 @@ import com.blackduck.integration.util.OperatingSystemType;
 
 import hudson.model.TaskListener;
 
-public class DetectScriptStrategyCallableTest {
+class DetectScriptStrategyCallableTest {
+
     private JenkinsIntLogger defaultLogger;
     private JenkinsProxyHelper defaultProxyHelper;
     private String toolsDirectoryPath;
 
     @BeforeEach
-    public void setUp() {
+    void setup() {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        TaskListener mockedTaskListener = Mockito.mock(TaskListener.class);
-        Mockito.when(mockedTaskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
+        TaskListener mockedTaskListener = mock(TaskListener.class);
+        when(mockedTaskListener.getLogger()).thenReturn(new PrintStream(byteArrayOutputStream));
         defaultLogger = JenkinsIntLogger.logToListener(mockedTaskListener);
         defaultProxyHelper = new JenkinsProxyHelper();
 
@@ -53,26 +54,22 @@ public class DetectScriptStrategyCallableTest {
     }
 
     @AfterEach
-    public void cleanUp() {
-        try {
-            FileUtils.deleteDirectory(new File(toolsDirectoryPath));
-        } catch (IOException e) {
-            fail("Clean up failed: ", e);
-        }
+    void cleanup() throws Exception {
+        FileUtils.deleteDirectory(new File(toolsDirectoryPath));
     }
 
     @Test
-    public void testDownloadShellScript() {
+    void testDownloadShellScript() throws Exception {
         downloadAndValidateScript(OperatingSystemType.LINUX);
     }
 
     @Test
-    public void testDownloadPowershellScript() {
+    void testDownloadPowershellScript() throws Exception {
         downloadAndValidateScript(OperatingSystemType.WINDOWS);
     }
 
     @Test
-    public void testFailureToDownload() {
+    void testFailureToDownload() throws Exception {
         assumeTrue(new File(toolsDirectoryPath).setReadOnly(), "Skipping test because we can't modify file permissions.");
         assumeFalse(new File(toolsDirectoryPath).canWrite(), "Skipping as test can still write. Possibly running as root.");
 
@@ -83,41 +80,29 @@ public class DetectScriptStrategyCallableTest {
             toolsDirectoryPath
         );
 
-        try {
-            assertThrows(IntegrationException.class, detectScriptStrategy.getSetupCallable()::call);
-        } catch (IntegrationException e) {
-            fail("An unexpected exception occurred: ", e);
-        }
+        assertThrows(IntegrationException.class, detectScriptStrategy.getSetupCallable()::call);
     }
 
     @Test
-    public void testAlreadyExists() {
-        try {
-            String scriptName = (SystemUtils.IS_OS_WINDOWS) ? DetectScriptStrategy.POWERSHELL_SCRIPT_FILENAME : DetectScriptStrategy.SHELL_SCRIPT_FILENAME;
-            Path preDownloadedShellScript = Paths.get(toolsDirectoryPath, DetectScriptStrategy.DETECT_INSTALL_DIRECTORY);
-            Files.createDirectories(preDownloadedShellScript);
-            Files.createFile(preDownloadedShellScript.resolve(scriptName));
-        } catch (Exception e) {
-            fail("Test could not be set up: Could not create Shell Script file", e);
-        }
+    void testAlreadyExists() throws Exception {
+        String scriptName = (SystemUtils.IS_OS_WINDOWS) ? DetectScriptStrategy.POWERSHELL_SCRIPT_FILENAME : DetectScriptStrategy.SHELL_SCRIPT_FILENAME;
+        Path preDownloadedShellScript = Paths.get(toolsDirectoryPath, DetectScriptStrategy.DETECT_INSTALL_DIRECTORY);
+        Files.createDirectories(preDownloadedShellScript);
+        Files.createFile(preDownloadedShellScript.resolve(scriptName));
 
         downloadAndValidateScript(OperatingSystemType.determineFromSystem());
     }
 
-    private void downloadAndValidateScript(OperatingSystemType operatingSystemType) {
-        try {
-            String expectedScriptPath = new File(toolsDirectoryPath, DetectScriptStrategy.DETECT_INSTALL_DIRECTORY).getPath();
+    private void downloadAndValidateScript(OperatingSystemType operatingSystemType) throws Exception {
+        String expectedScriptPath = new File(toolsDirectoryPath, DetectScriptStrategy.DETECT_INSTALL_DIRECTORY).getPath();
 
-            DetectScriptStrategy detectScriptStrategy = new DetectScriptStrategy(defaultLogger, defaultProxyHelper, operatingSystemType, toolsDirectoryPath);
-            ArrayList<String> scriptStrategyArgs = detectScriptStrategy.getSetupCallable().call();
-            File remoteScriptFile = new File(parseScriptStrategyArgs(scriptStrategyArgs));
+        DetectScriptStrategy detectScriptStrategy = new DetectScriptStrategy(defaultLogger, defaultProxyHelper, operatingSystemType, toolsDirectoryPath);
+        ArrayList<String> scriptStrategyArgs = detectScriptStrategy.getSetupCallable().call();
+        File remoteScriptFile = new File(parseScriptStrategyArgs(scriptStrategyArgs));
 
-            assertEquals(expectedScriptPath, remoteScriptFile.getParent(), String.format("Script was not downloaded to <%s>", expectedScriptPath));
-            assertTrue(remoteScriptFile.exists(), String.format("Expected script does not exist <%s>", expectedScriptPath));
-            assertTrue(Files.size(remoteScriptFile.toPath()) > 0, String.format("Expected script exists, but it's empty <%s>", expectedScriptPath));
-        } catch (IntegrationException | IOException e) {
-            fail("Unexpected exception occurred: ", e);
-        }
+        assertEquals(expectedScriptPath, remoteScriptFile.getParent(), String.format("Script was not downloaded to <%s>", expectedScriptPath));
+        assertTrue(remoteScriptFile.exists(), String.format("Expected script does not exist <%s>", expectedScriptPath));
+        assertTrue(Files.size(remoteScriptFile.toPath()) > 0, String.format("Expected script exists, but it's empty <%s>", expectedScriptPath));
     }
 
     private String parseScriptStrategyArgs(ArrayList<String> scriptStrategyArgs) {

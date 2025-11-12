@@ -2,12 +2,11 @@ package com.blackduck.integration.jenkins.detect.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import hudson.AbortException;
 import hudson.EnvVars;
@@ -17,7 +16,8 @@ import hudson.model.BuildListener;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 
-public class DetectCommandsFactoryTest {
+class DetectCommandsFactoryTest {
+
     private static TaskListener mockedTaskListener;
     private static Launcher mockedLauncher;
     private static Node mockedNode;
@@ -26,24 +26,24 @@ public class DetectCommandsFactoryTest {
     private static final EnvVars emptyEnvVars = new EnvVars();
 
     @BeforeEach
-    public void setUp() {
-        mockedTaskListener = Mockito.mock(TaskListener.class);
-        mockedLauncher = Mockito.mock(Launcher.class);
-        mockedNode = Mockito.mock(Node.class);
-        mockedAbstractBuild = Mockito.mock(AbstractBuild.class);
-        mockedBuildListener = Mockito.mock(BuildListener.class);
+    void setup() {
+        mockedTaskListener = mock(TaskListener.class);
+        mockedLauncher = mock(Launcher.class);
+        mockedNode = mock(Node.class);
+        mockedAbstractBuild = mock(AbstractBuild.class);
+        mockedBuildListener = mock(BuildListener.class);
     }
 
     @Test
-    public void testPipelineNullWorkspace() {
+    void testPipelineNullWorkspace() {
         AbortException exception = assertThrows(AbortException.class, () -> DetectCommandsFactory.fromPipeline(mockedTaskListener, emptyEnvVars, mockedLauncher, mockedNode, null));
         assertEquals(DetectCommandsFactory.NULL_WORKSPACE, exception.getMessage());
     }
 
     @Test
-    public void testPostBuildNullWorkspace() throws IOException, InterruptedException {
-        Mockito.doReturn(emptyEnvVars).when(mockedAbstractBuild).getEnvironment(mockedBuildListener);
-        Mockito.doReturn(null).when(mockedAbstractBuild).getWorkspace();
+    void testPostBuildNullWorkspace() throws Exception {
+        doReturn(emptyEnvVars).when(mockedAbstractBuild).getEnvironment(mockedBuildListener);
+        doReturn(null).when(mockedAbstractBuild).getWorkspace();
         AbortException exception = assertThrows(AbortException.class, () -> DetectCommandsFactory.fromPostBuild(mockedAbstractBuild, mockedLauncher, mockedBuildListener));
         assertEquals(DetectCommandsFactory.NULL_WORKSPACE, exception.getMessage());
     }
