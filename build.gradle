@@ -55,7 +55,7 @@ java {
 project.ext.excludesFromTestCoverage = ['**/DetectDownloadStrategy.java', '**/DetectPipelineStep.java', '**/DetectPostBuildStep.java', '**/DetectAirGapInstallation.java']
 
 group = 'com.blackducksoftware.integration'
-version = '11.0.0-SIGQA2'
+version = '11.0.0-SIGQA3-SNAPSHOT'
 description = 'Black Duck Detect for Jenkins'
 
 apply plugin: 'com.blackduck.integration.solution'
