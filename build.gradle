@@ -24,9 +24,13 @@ buildscript {
 }
 
 plugins {
-    // this version (0.43.0 and up) , uses a later version of test-harness eliminating the 
+    // this version (0.43.0 and up) , uses a later version of test-harness eliminating the
     // dependency on a compromised version of apache commons-text.  Shows as a red-herring in scans
     id 'org.jenkins-ci.jpi' version '0.46.0'
+}
+
+configurations.all {
+    resolutionStrategy.force 'com.google.guava:guava:33.2.1-jre'
 }
 
 def internalRepoHost = System.getenv("SNPS_INTERNAL_ARTIFACTORY")
