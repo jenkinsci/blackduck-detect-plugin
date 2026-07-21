@@ -31,6 +31,15 @@ plugins {
 
 configurations.all {
     resolutionStrategy.force 'com.google.guava:guava:33.2.1-jre'
+    // CVE fix: xstream 1.4.20 (from jenkins-core) has known CVEs; 1.4.21 is the patch release
+    resolutionStrategy.force 'com.thoughtworks.xstream:xstream:1.4.21'
+    // CVE fix: forces 27.0.4 across jenkins-common and blackduck-common chains;
+    resolutionStrategy.force 'com.blackduck.integration:integration-common:27.0.4'
+    // CVE fix: jackson-core 2.14.0 (via zjsonpatch->integration-common) has known CVEs;
+    // all three Jackson artifacts must stay in sync
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-core:2.18.8'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-databind:2.18.8'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-annotations:2.18.8'
 }
 
 def internalRepoHost = System.getenv("SNPS_INTERNAL_ARTIFACTORY")
@@ -87,7 +96,8 @@ dependencies {
     implementation 'org.checkerframework:checker-qual:3.33.0'
     implementation 'com.google.j2objc:j2objc-annotations:2.8'
 
-    implementation 'com.blackduck.integration:blackduck-common:67.0.20'
+    // Upgraded from 67.0.20; brings in newer integration-rest and transitive CVE fixes
+    implementation 'com.blackduck.integration:blackduck-common:68.0.2'
     implementation('com.blackduck.integration:jenkins-common:1.0.0'){
         exclude group: "org.jenkins-ci.main", module: "jenkins-core"
         exclude group: "org.jenkins-ci.plugins", module: "credentials"
