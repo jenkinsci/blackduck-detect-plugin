@@ -39,9 +39,9 @@ configurations.all {
     resolutionStrategy.force 'com.blackduck.integration:integration-common:27.0.4'
     // CVE fix: jackson-core 2.14.0 (via zjsonpatch->integration-common) has known CVEs;
     // all three Jackson artifacts must stay in sync
-    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-core:2.18.8'
-    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-databind:2.18.8'
-    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-annotations:2.18.8'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-core:2.22.1'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-annotations:2.22'
     // CVE fix: plexus-utils 4.0.0 (from plexus-archiver) has known CVEs; 4.0.3 is the patch release
     resolutionStrategy.force 'org.codehaus.plexus:plexus-utils:4.0.3'
     // CVE fix: commons-beanutils 1.9.4 (from jenkins-core via stapler/json-lib/commons-jelly) has known CVEs;
