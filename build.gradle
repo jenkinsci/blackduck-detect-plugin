@@ -75,7 +75,7 @@ java {
 project.ext.excludesFromTestCoverage = ['**/DetectDownloadStrategy.java', '**/DetectPipelineStep.java', '**/DetectPostBuildStep.java', '**/DetectAirGapInstallation.java']
 
 group = 'com.blackducksoftware.integration'
-version = '11.0.1-SIGQA2-SNAPSHOT'
+version = '12.0.0-SIGQA1-SNAPSHOT'
 description = 'Black Duck Detect for Jenkins'
 
 apply plugin: 'com.blackduck.integration.solution'
@@ -89,7 +89,7 @@ artifactory {
 jenkinsPlugin {
     jenkinsVersion = '2.462.3' // as of version 0.40.0 of jpi, it's jenkinsVersion...
     displayName = 'Black Duck Detect'
-    compatibleSinceVersion = '11.0.0'
+    compatibleSinceVersion = '12.0.0'
     url = 'https://github.com/jenkinsci/blackduck-detect-plugin'
     gitHubUrl = 'https://github.com/jenkinsci/blackduck-detect-plugin'
 
