@@ -10,6 +10,7 @@ buildscript {
         javaTargetCompatibility = 8
         javaSourceCompatibility = 8
     }
+    ext['json-smart.version'] = '2.6.1'
 
     dependencies { classpath "com.blackduck.integration:common-gradle-plugin:${managedCgpVersion}" }
 
@@ -104,6 +105,7 @@ dependencies {
 
     implementation 'org.checkerframework:checker-qual:3.33.0'
     implementation 'com.google.j2objc:j2objc-annotations:2.8'
+    implementation('net.minidev:json-smart:2.6.1')
 
     // Upgraded from 67.0.20; brings in newer integration-rest and transitive CVE fixes
     implementation 'com.blackduck.integration:blackduck-common:68.0.2'
