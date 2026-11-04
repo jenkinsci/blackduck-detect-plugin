@@ -100,7 +100,7 @@ jenkinsPlugin {
 }
 
 dependencies {
-    implementation 'org.springframework.security:spring-security-web:5.8.15'
+    implementation 'org.springframework.security:spring-security-web:5.8.16'
     annotationProcessor 'com.blackduck.integration:jenkins-annotation-processor:1.0.0'
 
     implementation 'org.checkerframework:checker-qual:3.33.0'
