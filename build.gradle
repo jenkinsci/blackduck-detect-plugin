@@ -120,6 +120,9 @@ dependencies {
 
     implementation 'org.jenkins-ci.plugins:credentials:1139.veb_9579fca_33b_'
     implementation 'org.jenkins-ci.plugins:plain-credentials:1.8'
+    implementation('commons-codec:commons-codec:1.23.0') {
+        because 'transitive via integration-common; 1.16.1 has a vulnerability (BDSA-2026-39919)'
+    }
 
     workflowJobDslApi 'org.jenkins-ci.plugins:job-dsl:1.83'
     workflowJobApi 'org.jenkins-ci.plugins.workflow:workflow-job:1207.ve6191ff089f8'
