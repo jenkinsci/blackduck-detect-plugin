@@ -10,6 +10,7 @@ buildscript {
         javaTargetCompatibility = 8
         javaSourceCompatibility = 8
     }
+    ext['json-smart.version'] = '2.6.1'
 
     dependencies { classpath "com.blackduck.integration:common-gradle-plugin:${managedCgpVersion}" }
 
@@ -39,9 +40,11 @@ configurations.all {
     resolutionStrategy.force 'com.blackduck.integration:integration-common:27.0.4'
     // CVE fix: jackson-core 2.14.0 (via zjsonpatch->integration-common) has known CVEs;
     // all three Jackson artifacts must stay in sync
-    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-core:2.22.1'
-    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-core:2.22.4'
+    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-databind:2.22.4'
     resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-annotations:2.22'
+    // antlr4-runtime is a transitive dep via org.tomlj:tomlj; 4.11.1 has CVE-2026-13500
+    resolutionStrategy.force 'org.antlr:antlr4-runtime:4.13.2'
     // CVE fix: plexus-utils 4.0.0 (from plexus-archiver) has known CVEs; 4.0.3 is the patch release
     resolutionStrategy.force 'org.codehaus.plexus:plexus-utils:4.0.3'
     // CVE fix: commons-beanutils 1.9.4 (from jenkins-core via stapler/json-lib/commons-jelly) has known CVEs;
@@ -97,11 +100,12 @@ jenkinsPlugin {
 }
 
 dependencies {
-    implementation 'org.springframework.security:spring-security-web:5.8.15'
+    implementation 'org.springframework.security:spring-security-web:5.8.16'
     annotationProcessor 'com.blackduck.integration:jenkins-annotation-processor:1.0.0'
 
     implementation 'org.checkerframework:checker-qual:3.33.0'
     implementation 'com.google.j2objc:j2objc-annotations:2.8'
+    implementation('net.minidev:json-smart:2.6.1')
 
     // Upgraded from 67.0.20; brings in newer integration-rest and transitive CVE fixes
     implementation 'com.blackduck.integration:blackduck-common:68.0.2'
@@ -116,6 +120,9 @@ dependencies {
 
     implementation 'org.jenkins-ci.plugins:credentials:1139.veb_9579fca_33b_'
     implementation 'org.jenkins-ci.plugins:plain-credentials:1.8'
+    implementation('commons-codec:commons-codec:1.23.0') {
+        because 'transitive via integration-common; 1.16.1 has a vulnerability (BDSA-2026-39919)'
+    }
 
     workflowJobDslApi 'org.jenkins-ci.plugins:job-dsl:1.83'
     workflowJobApi 'org.jenkins-ci.plugins.workflow:workflow-job:1207.ve6191ff089f8'
