@@ -105,7 +105,7 @@ dependencies {
 
     // Upgraded from 67.0.20; brings in newer integration-rest and transitive CVE fixes
     implementation 'com.blackduck.integration:blackduck-common:68.0.2'
-    implementation('com.blackduck.integration:jenkins-common:1.0.1'){
+    implementation('com.blackduck.integration:jenkins-common:1.0.0'){
         exclude group: "org.jenkins-ci.main", module: "jenkins-core"
         exclude group: "org.jenkins-ci.plugins", module: "credentials"
         exclude group: "org.jenkins-ci.plugins", module: "plain-credentials"
