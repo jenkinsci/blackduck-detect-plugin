@@ -33,8 +33,6 @@ public class DetectPipelineCommands {
                 throw new DetectJenkinsException(errorMsg);
             }
         }
-
         return exitCode;
     }
-
 }
