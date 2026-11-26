@@ -36,7 +36,7 @@ import hudson.util.Messages;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import jenkins.util.xml.XMLUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.kohsuke.stapler.*;
 import org.kohsuke.stapler.verb.POST;

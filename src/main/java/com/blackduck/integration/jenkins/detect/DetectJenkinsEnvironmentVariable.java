@@ -20,5 +20,4 @@ public enum DetectJenkinsEnvironmentVariable {
     public String stringValue() {
         return environmentVariable;
     }
-
 }
